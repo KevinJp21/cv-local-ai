@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>CV Local AI</title>
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+  <main class="shell">
+    <header class="header">
+      <div class="mark">CV</div>
+      <div>
+        <p class="eyebrow">HERRAMIENTA LOCAL</p>
+        <h1>CV Local AI</h1>
+        <p class="sub">Adapta tu hoja de vida a cada oferta sin enviar tus datos a una API externa.</p>
+      </div>
+    </header>
+
+    <section class="status">
+      <span class="dot"></span>
+      <div><strong>Modelo configurado:</strong> {{ model }} <span class="muted">· Ollama en tu equipo</span></div>
+    </section>
+
+    <form action="/generate" method="post" id="cv-form">
+      <label for="job_offer">Descripción de la oferta laboral</label>
+      <textarea id="job_offer" name="job_offer" required minlength="80" maxlength="25000"
+        placeholder="Pega aquí la descripción completa: responsabilidades, requisitos, tecnologías y condiciones..."></textarea>
+      <div class="form-bottom">
+        <span class="hint">El modelo seleccionará las experiencias relevantes y generará un PDF.</span>
+        <button type="submit" id="submit-btn">Generar CV en PDF <span aria-hidden="true">↗</span></button>
+      </div>
+    </form>
+
+    <section class="rules">
+      <h2>Antes de empezar</h2>
+      <ul>
+        <li>La información personal y la experiencia se toman de <code>data/cv_base.json</code>.</li>
+        <li>El modelo no debería inventar tecnologías, empleos ni responsabilidades.</li>
+        <li>El PDF se genera localmente. Revísalo antes de enviarlo.</li>
+      </ul>
+    </section>
+    <footer>Versión inicial · Solo accesible en tu equipo si la ejecutas en localhost.</footer>
+  </main>
+  <script>
+    const form = document.getElementById('cv-form');
+    const btn = document.getElementById('submit-btn');
+    form.addEventListener('submit', () => {
+      btn.disabled = true;
+      btn.textContent = 'Generando… espera, el modelo puede tardar un poco';
+    });
+  </script>
+</body>
+</html>

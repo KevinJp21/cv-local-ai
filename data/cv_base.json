@@ -1,0 +1,268 @@
+{
+  "name": "Kevin Julio Pineda",
+  "email": "kevinjp821@gmail.com",
+  "phone": "+57 301 282 5372",
+  "portfolio": "https://kevinjp.dev/",
+  "linkedin": "https://linkedin.com/in/kevinjulio/",
+  "location": "Bogotá, Colombia",
+  "availability": "Remota, híbrida, presencial. Disponibilidad para reubicación a nivel nacional.",
+  "education": "Ingeniería de Sistemas\nUniversidad Simón Bolívar\n2026. Plan académico culminado, opción de grado pendiente.",
+  "languages": [
+    "Inglés B2"
+  ],
+  "target_title_frontend": "Desarrollador Frontend | React · Next.js",
+  "target_title_fullstack": "Desarrollador Full Stack | React / Next.js / .NET",
+  "summary_frontend": "Desarrollador Frontend con experiencia en proyectos profesionales, freelance y personales, especializado en React, Next.js, TypeScript y JavaScript. Enfocado en el desarrollo de interfaces responsivas y aplicaciones empresariales, con experiencia en arquitectura frontend basada en Feature-Sliced Design (FSD), gestión de estado con Redux, integración de APIs REST y optimización del rendimiento web. He desarrollado soluciones para plataformas financieras, sistemas empresariales y tiendas e-commerce, con capacidad para trabajar de forma autónoma, definir estructuras frontend y colaborar con equipos multidisciplinarios.",
+  "summary_fullstack": "Desarrollador Full Stack con experiencia en proyectos profesionales, freelance y personales, especializado en React, Next.js, TypeScript y C#/.NET. Experiencia en desarrollo de aplicaciones web, APIs REST, bases de datos relacionales y backend con ASP.NET Core y Entity Framework Core. Manejo de Clean Architecture, CQRS, autenticación, autorización, Docker y AWS. Capacidad para trabajar de forma autónoma y adaptarme rápidamente a nuevas tecnologías.",
+  "skills_frontend": {
+    "Frontend": [
+      "React",
+      "Next.js",
+      "TypeScript",
+      "JavaScript",
+      "HTML5",
+      "CSS3",
+      "Redux",
+      "Tailwind CSS",
+      "Responsive Design"
+    ],
+    "Arquitectura Frontend": [
+      "Feature-Sliced Design (FSD)",
+      "componentes reutilizables",
+      "diseño modular"
+    ],
+    "E-commerce": [
+      "Shopify",
+      "Liquid",
+      "Shopify Storefront API"
+    ],
+    "APIs e integración": [
+      "APIs REST"
+    ],
+    "Herramientas de desarrollo": [
+      "Git",
+      "Docker",
+      "Azure DevOps",
+      "AWS",
+      "Linux",
+      "Nginx"
+    ],
+    "Optimización web": [
+      "Core Web Vitals",
+      "SEO técnico",
+      "Lazy Loading",
+      "Code Splitting",
+      "WCAG"
+    ],
+    "Metodologías": [
+      "Scrum",
+      "Desarrollo ágil"
+    ]
+  },
+  "skills": {
+    "Frontend": [
+      "React",
+      "Next.js",
+      "TypeScript",
+      "JavaScript",
+      "Redux",
+      "Tailwind CSS"
+    ],
+    "Backend": [
+      "C#",
+      ".NET",
+      "ASP.NET Core",
+      "Entity Framework Core",
+      "MediatR",
+      "APIs REST"
+    ],
+    "Bases de datos": [
+      "PostgreSQL",
+      "MySQL",
+      "SQL"
+    ],
+    "Arquitectura": [
+      "Clean Architecture",
+      "CQRS",
+      "Repository",
+      "Unit of Work",
+      "Feature-Sliced Design (FSD)"
+    ],
+    "DevOps e infraestructura": [
+      "Docker",
+      "Docker Compose",
+      "AWS EC2",
+      "Azure DevOps",
+      "Git",
+      "Linux",
+      "Nginx"
+    ],
+    "E-commerce": [
+      "Shopify",
+      "Liquid",
+      "GraphQL",
+      "Shopify Storefront API"
+    ],
+    "Optimización web": [
+      "Core Web Vitals",
+      "SEO técnico",
+      "Lazy Loading",
+      "Code Splitting",
+      "WCAG"
+    ],
+    "Otros": [
+      "Scrum",
+      "Desarrollo ágil",
+      "Python (formación académica)",
+      "Power BI (formación académica)"
+    ]
+  },
+  "experience": [
+    {
+      "id": "silver",
+      "section": "profesional",
+      "title": "Desarrollador Frontend",
+      "company": "Silver Holdings S.A.S. – Barranquilla",
+      "dates": "Enero 2026 – Junio 2026",
+      "type": "Experiencia profesional",
+      "technologies": [
+        "React",
+        "Next.js",
+        "TypeScript",
+        "Redux",
+        "Docker",
+        "Docker Compose",
+        "AWS",
+        "Azure DevOps",
+        "SSR",
+        "Core Web Vitals",
+        "SEO técnico"
+      ],
+      "bullets": [
+        "Desarrollé módulos de inversión para la fintech **FTF Capital** utilizando React, Next.js, TypeScript y Redux. Implementé funcionalidades para acceder a ofertas de inversión, recargar la wallet y consultar el portafolio mediante métricas e indicadores de rendimiento, consumiendo APIs REST del backend. Integré DocuSign embebido para formalizar inversiones mediante firma digital.",
+        "Lideré de forma autónoma el desarrollo frontend de una **plataforma interna de gestión para Viajar Olímpica**, destinada a administrar la redención y reversión de Puntos Plata en hoteles, paquetes y tours. Definí la arquitectura, integré APIs REST y desarrollé módulos de cupones, pagos en caja, asociación de facturas y generación de vouchers.",
+        "Propuse y desarrollé el rediseño de la landing page de **Facthor**, plataforma de factoring digital, con mejoras visuales y estructurales orientadas a optimizar la experiencia de usuario y el SEO.",
+        "Apliqué **Feature-Sliced Design (FSD)** para estructurar el frontend, favoreciendo la organización, escalabilidad y mantenibilidad del código.",
+        "Participé en la gestión y el despliegue de aplicaciones en entornos de prueba y producción sobre AWS, utilizando Docker, Docker Compose y Azure DevOps."
+      ]
+    },
+    {
+      "id": "rueda",
+      "section": "freelance",
+      "title": "Desarrollador Shopify Frontend",
+      "company": "Ferretería Rueda – Proyecto freelance",
+      "dates": "Noviembre de 2024 – Mayo de 2025",
+      "type": "Experiencia freelance",
+      "technologies": [
+        "Shopify",
+        "Liquid",
+        "JavaScript",
+        "SEO",
+        "Core Web Vitals"
+      ],
+      "bullets": [
+        "Desarrollé desde cero la primera tienda e-commerce de la empresa, habilitando su canal de ventas digitales.",
+        "Implementé búsqueda predictiva, filtros dinámicos, carrito persistente y componentes interactivos para mejorar la navegación y experiencia de compra.",
+        "Desarrollé secciones reutilizables y configurables que permitieron administrar el contenido de la tienda sin modificar el código.",
+        "Optimicé el SEO técnico, facilitando la indexación y visibilidad orgánica de productos y categorías en Google."
+      ]
+    },
+    {
+      "id": "chikos",
+      "section": "freelance",
+      "title": "Desarrollador Web Frontend",
+      "title_fullstack": "Desarrollador Web Full Stack",
+      "company": "Chikos Gourmet – Proyecto freelance",
+      "dates": "Julio de 2024 – Octubre de 2024",
+      "type": "Experiencia freelance",
+      "technologies": [
+        "React",
+        "TypeScript",
+        "Remix",
+        "MySQL",
+        "Cloudflare Images",
+        "Nginx",
+        "Core Web Vitals",
+        "SEO técnico"
+      ],
+      "bullets": [
+        "Desarrollé el sitio web y el panel administrativo del restaurante utilizando React, TypeScript y Remix, con componentes reutilizables, tipado estricto e integración de APIs REST para la gestión de datos del menú y contenido.",
+        "Implementé un panel de administración que permite al cliente gestionar el menú, imágenes y contenido del sitio de forma autónoma sin modificar el código, con persistencia de datos en MySQL.",
+        "Apliqué optimizaciones de Core Web Vitals y buenas prácticas de SEO técnico para mejorar la velocidad de carga, la indexación y la visibilidad orgánica.",
+        "Integré Cloudflare Images para el almacenamiento y entrega de recursos multimedia con variantes optimizadas por dispositivo, configurando el despliegue en producción sobre Nginx."
+      ],
+      "bullets_fullstack": [
+        "Desarrollé una solución web full stack utilizando React, TypeScript y Remix en frontend, construyendo módulos y servicios de API para la gestión dinámica de datos y contenidos.",
+        "Implementé un panel administrativo para gestionar platos del menú, imágenes publicitarias y contenido del sitio, integrando servicios de API con interfaces fuertemente tipadas en TypeScript.",
+        "Diseñé e implementé el modelado de entidades y la persistencia de datos relacionales en MySQL, asegurando la consistencia e integridad de la información del restaurante.",
+        "Integré Cloudflare Images para almacenar y servir recursos multimedia mediante variantes optimizadas por dispositivo, reduciendo los tiempos de carga y el consumo de ancho de banda.",
+        "Apliqué optimizaciones de Core Web Vitals y buenas prácticas de SEO técnico para mejorar el rendimiento web, configurando el despliegue del sistema en un servidor VPS con Nginx."
+      ]
+    },
+    {
+      "id": "molaryx",
+      "section": "proyectos",
+      "title": "Desarrollador Frontend",
+      "title_fullstack": "Desarrollador Full Stack",
+      "company": "Molaryx, SaaS multi-tenant – Proyecto personal",
+      "dates": "Junio 2026 – Actualidad",
+      "type": "Proyecto personal",
+      "technologies": [
+        "React",
+        "Next.js",
+        "TypeScript",
+        "C#",
+        ".NET",
+        "ASP.NET Core",
+        "PostgreSQL",
+        "Entity Framework Core",
+        "Docker",
+        "AWS EC2",
+        "Clean Architecture",
+        "CQRS",
+        "SSR",
+        "Core Web Vitals",
+        "SEO técnico"
+      ],
+      "bullets": [
+        "Desarrollé la interfaz de una plataforma SaaS multi-tenant para la gestión de consultorios utilizando React, Next.js y TypeScript.",
+        "Construí módulos para la gestión de pacientes, citas, tratamientos, historia clínica, pagos y usuarios, priorizando una experiencia de usuario clara y adaptable.",
+        "Integré las interfaces con APIs REST y gestioné estados, validaciones y flujos de información entre los componentes y los servicios, con persistencia en PostgreSQL.",
+        "Organicé el código mediante componentes reutilizables y una arquitectura modular, priorizando la escalabilidad y mantenibilidad.",
+        "Implementé interfaces para autenticación, autorización y gestión de permisos, además de funcionalidades con actualizaciones en tiempo real."
+      ],
+      "bullets_fullstack": [
+        "Diseñé y desarrollé una plataforma full stack utilizando React, Next.js y TypeScript en frontend, y C#, .NET y ASP.NET Core en backend.",
+        "Implementé APIs REST y lógica de negocio en C# para integrar los módulos del sistema con los servicios backend.",
+        "Diseñé la persistencia de datos con PostgreSQL y Entity Framework Core, incluyendo el modelado de entidades y sus relaciones.",
+        "Implementé autenticación, autorización y gestión de usuarios, roles y permisos en una arquitectura multi-tenant.",
+        "Apliqué Clean Architecture, arquitectura modular y patrones CQRS, Repository y Unit of Work.",
+        "Desarrollé módulos para gestión de pacientes, citas, tratamientos, historias clínicas, pagos, usuarios y notificaciones.",
+        "Configuré Docker y desplegué el backend en AWS EC2 sobre Linux, incluyendo variables de entorno y servicios de ejecución."
+      ]
+    },
+    {
+      "id": "verezza",
+      "section": "proyectos",
+      "title": "Desarrollador Frontend (Headless E-commerce)",
+      "company": "Verezza E-commerce – Proyecto personal",
+      "dates": "Octubre de 2024 – Noviembre de 2024",
+      "type": "Proyecto personal",
+      "technologies": [
+        "React",
+        "TypeScript",
+        "Remix",
+        "Shopify Storefront API",
+        "GraphQL",
+        "Core Web Vitals",
+        "SEO técnico"
+      ],
+      "bullets": [
+        "Desarrollé una tienda e-commerce headless desde cero utilizando React, TypeScript y Remix, integrando Shopify mediante Storefront API y GraphQL.",
+        "Implementé autenticación, catálogo con filtros dinámicos, carrito persistente, wishlist y checkout integrado con Shopify.",
+        "Diseñé una interfaz responsive mobile-first con soporte multiidioma (español/inglés) y multimoneda (COP/USD/EUR).",
+        "Implementé optimizaciones de rendimiento mediante Server-Side Rendering (SSR), lazy loading y estrategias de caché."
+      ]
+    }
+  ]
+}
