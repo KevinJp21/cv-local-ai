@@ -25,6 +25,24 @@ class CVService:
         ]
         return "".join(parts)[:max_len]
 
+    @staticmethod
+    def resolve_location(job_offer: str, profile: dict[str, Any]) -> tuple[str, str]:
+        offer_lower = job_offer.lower()
+        
+        # 1. Si la vacante menciona Barranquilla o Atlántico
+        if any(kw in offer_lower for kw in ("barranquilla", "atlantico", "atlántico")):
+            return "Barranquilla, Colombia", "Presencial, híbrida, remota."
+            
+        # 2. Si la vacante menciona Bogotá o Cundinamarca
+        if any(kw in offer_lower for kw in ("bogota", "bogotá", "cundinamarca")):
+            return "Bogotá, Colombia", "Remota, híbrida, presencial."
+            
+        # 3. Por defecto (remoto general o vacantes nacionales)
+        return (
+            profile.get("location", "Bogotá, Colombia"),
+            profile.get("availability", "Remota, híbrida, presencial. Disponibilidad para reubicación a nivel nacional.")
+        )
+
     def build_filename(self, profile: dict[str, Any], tailored: dict[str, Any]) -> str:
         candidate = self.upper_camel_case(" ".join(profile["name"].split()[:2]))
         position = (
@@ -48,11 +66,16 @@ class CVService:
 
         focus = tailored["focus"]
 
+        # Resolver ubicación dinámica entre Barranquilla y Bogotá según la oferta
+        location, availability = self.resolve_location(job_offer, profile)
+
         # Enriquecer con los datos de contacto y educación
         tailored["contact"] = {
             key: profile[key]
-            for key in ("name", "email", "phone", "portfolio", "linkedin", "location", "availability")
+            for key in ("name", "email", "phone", "portfolio", "linkedin")
         }
+        tailored["contact"]["location"] = location
+        tailored["contact"]["availability"] = availability
         tailored["languages"] = profile["languages"]
         tailored["education_text"] = profile["education"]
         tailored["experiences"] = []
