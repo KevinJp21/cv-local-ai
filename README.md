@@ -101,7 +101,7 @@ La información del candidato reside en:
 Para estructurar un currículum existente sin necesidad de editar el archivo JSON manualmente, se puede utilizar el siguiente prompt en ChatGPT, Claude o cualquier modelo de preferencia:
 
 <details>
-<summary><b>Ver prompt de extracción</b></summary>
+<summary><b>Haz clic aquí para desplegar y copiar el prompt de extracción</b></summary>
 
 ```text
 Actúa como un extractor de datos profesional para perfiles tecnológicos. 
@@ -167,6 +167,39 @@ AQUÍ ESTÁ EL TEXTO DE MI CV:
 </details>
 
 Una vez generado, guárdalo en `data/cv_base.json` para que el sistema procese y adapte el perfil a las ofertas laborales requeridas.
+
+---
+
+## Personalización de ubicación dinámica
+
+El sistema cuenta con un mecanismo en `app/services/cv_service.py` (`resolve_location`) que detecta automáticamente si la vacante pertenece a una ciudad específica para adaptar la ubicación y disponibilidad del CV sin requerir cambios manuales en el archivo JSON:
+
+- **Detección local:** Si la oferta menciona Barranquilla o Atlántico, establece automáticamente `Barranquilla, Colombia` con disponibilidad presencial/híbrida.
+- **Detección capital:** Si la oferta menciona Bogotá, establece `Bogotá, Colombia` con disponibilidad remota/híbrida.
+- **Ofertas remotas o generales:** Utiliza la ubicación por defecto definida en tu `cv_base.json` junto con disponibilidad de reubicación nacional.
+
+### ¿Cómo adaptar las ciudades a tu caso personal?
+
+Si resides en otra región o país (por ejemplo: Medellín / Bogotá, o Madrid / Barcelona), puedes personalizar las reglas editando la función `resolve_location` en `app/services/cv_service.py`:
+
+```python
+@staticmethod
+def resolve_location(job_offer: str, profile: dict[str, Any]) -> tuple[str, str]:
+    offer_lower = job_offer.lower()
+    
+    # Define tus ciudades objetivo según las palabras clave de la oferta
+    if any(kw in offer_lower for kw in ("medellin", "medellín", "antioquia")):
+        return "Medellín, Colombia", "Presencial, híbrida, remota."
+        
+    if any(kw in offer_lower for kw in ("bogota", "bogotá")):
+        return "Bogotá, Colombia", "Remota, híbrida, presencial."
+        
+    # Ubicación base del perfil
+    return (
+        profile.get("location", "Tu Ciudad, País"),
+        profile.get("availability", "Remota, híbrida, presencial.")
+    )
+```
 
 ---
 
