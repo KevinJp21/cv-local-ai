@@ -1,0 +1,147 @@
+{
+  "name": "Juan Pérez Rodríguez",
+  "email": "juan.perez@example.com",
+  "phone": "+57 300 123 4567",
+  "portfolio": "https://juanperez.dev",
+  "linkedin": "https://linkedin.com/in/juanperez",
+  "location": "Bogotá, Colombia",
+  "availability": "Remota, híbrida, presencial.",
+  "education": "Ingeniería de Sistemas\nUniversidad Nacional\n2020 – 2024. Graduado.",
+  "languages": [
+    "Español (Nativo)",
+    "Inglés B2"
+  ],
+  "target_title_frontend": "Desarrollador Frontend",
+  "target_title_fullstack": "Desarrollador Full Stack",
+  "summary_frontend": "Desarrollador Frontend con más de 3 años de experiencia construyendo aplicaciones web modernas, responsivas y accesibles con React, Next.js y TypeScript. Especializado en arquitectura de componentes, optimización de Core Web Vitals, integración con APIs REST y gestión de estado escalable.",
+  "summary_fullstack": "Desarrollador Full Stack con experiencia en el desarrollo de soluciones web completas, integrando interfaces modernas en React/TypeScript con servicios backend en Node.js o Python y bases de datos relacionales SQL. Manejo de Docker, Git y despliegues en la nube.",
+  "skills_frontend": {
+    "Frontend": [
+      "React",
+      "Next.js",
+      "TypeScript",
+      "JavaScript",
+      "HTML5",
+      "CSS3",
+      "Tailwind CSS",
+      "Redux"
+    ],
+    "Arquitectura & Calidad": [
+      "Componentes reutilizables",
+      "Diseño modular",
+      "Responsive Design",
+      "WCAG (Accesibilidad)"
+    ],
+    "Optimización": [
+      "Core Web Vitals",
+      "SEO técnico",
+      "Lazy Loading",
+      "Code Splitting"
+    ],
+    "Herramientas": [
+      "Git",
+      "Docker",
+      "APIs REST"
+    ],
+    "Metodologías": [
+      "Scrum",
+      "Desarrollo ágil"
+    ]
+  },
+  "skills": {
+    "Frontend": [
+      "React",
+      "Next.js",
+      "TypeScript",
+      "JavaScript",
+      "Tailwind CSS"
+    ],
+    "Backend": [
+      "Node.js",
+      "Express",
+      "Python",
+      "APIs REST"
+    ],
+    "Bases de datos": [
+      "PostgreSQL",
+      "MySQL",
+      "SQL"
+    ],
+    "DevOps & Herramientas": [
+      "Git",
+      "Docker",
+      "AWS",
+      "Linux"
+    ],
+    "Metodologías": [
+      "Scrum",
+      "Desarrollo ágil"
+    ]
+  },
+  "experience": [
+    {
+      "id": "empresa1",
+      "section": "profesional",
+      "title": "Desarrollador Frontend",
+      "title_fullstack": "Desarrollador Full Stack",
+      "company": "Tech Solutions S.A.S.",
+      "dates": "Enero 2023 – Presente",
+      "type": "Experiencia profesional",
+      "technologies": [
+        "React",
+        "Next.js",
+        "TypeScript",
+        "Redux",
+        "APIs REST",
+        "Docker"
+      ],
+      "bullets": [
+        "Desarrollé la interfaz de usuario para el portal de clientes utilizando React, Next.js y TypeScript, mejorando la velocidad de carga en un 35%.",
+        "Integré servicios y APIs REST para flujos de autenticación, pagos y consulta de reportes en tiempo real.",
+        "Implementé componentes reutilizables y aplicó buenas prácticas de accesibilidad web (WCAG) y optimización SEO."
+      ],
+      "bullets_fullstack": [
+        "Diseñé e implementé soluciones de punta a punta con React en el frontend y servicios REST en el backend con Node.js y PostgreSQL.",
+        "Construí endpoints seguros y optimicé consultas de base de datos para reducir la latencia de respuesta.",
+        "Configuré entornos de prueba con Docker y flujos de integración continua con Git."
+      ]
+    },
+    {
+      "id": "freelance1",
+      "section": "freelance",
+      "title": "Desarrollador Web",
+      "company": "E-Commerce Moda – Proyecto freelance",
+      "dates": "Marzo 2022 – Diciembre 2022",
+      "type": "Experiencia freelance",
+      "technologies": [
+        "JavaScript",
+        "HTML5",
+        "CSS3",
+        "SEO",
+        "APIs REST"
+      ],
+      "bullets": [
+        "Construí una tienda online con catálogo interactivo, filtros dinámicos y carrito persistente.",
+        "Optimicé el SEO técnico y Core Web Vitals, logrando una mejora del 40% en visibilidad orgánica en Google."
+      ]
+    },
+    {
+      "id": "proyecto1",
+      "section": "proyectos",
+      "title": "Desarrollador Full Stack",
+      "company": "TaskFlow App – Proyecto personal",
+      "dates": "2023 – Actualidad",
+      "type": "Proyecto personal",
+      "technologies": [
+        "React",
+        "TypeScript",
+        "PostgreSQL",
+        "Docker"
+      ],
+      "bullets": [
+        "Desarrollé una aplicación para gestión de tareas en tiempo real con React, TypeScript y autenticación por tokens JWT.",
+        "Diseñé el esquema de base de datos relacional en PostgreSQL y automaticé el despliegue con Docker."
+      ]
+    }
+  ]
+}

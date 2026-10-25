@@ -19,7 +19,7 @@ class Settings:
     STATIC_DIR: Path = ROOT_DIR / "app" / "static"
 
     OLLAMA_BASE_URL: str = os.getenv("OLLAMA_BASE_URL", "http://localhost:11434")
-    OLLAMA_MODEL: str = os.getenv("OLLAMA_MODEL", "qwen2.5:14b")
+    OLLAMA_MODEL: str = os.getenv("OLLAMA_MODEL", "gemma4:31b-cloud")
     TEMPERATURE: float = float(os.getenv("OLLAMA_TEMPERATURE", "0.4"))
     NUM_CTX: int = int(os.getenv("OLLAMA_NUM_CTX", "12000"))
 
