@@ -1,0 +1,148 @@
+{
+  "name": "Tu Nombre",
+  "email": "tu.correo@example.com",
+  "phone": "+57 300 000 0000",
+  "portfolio": "https://tu-portafolio.dev",
+  "linkedin": "https://linkedin.com/in/tu-perfil",
+  "location": "Ciudad, País",
+  "availability": "Remota, híbrida, presencial.",
+  "education": "Ingeniería de Sistemas\nUniversidad de Ejemplo\n2020",
+  "languages": [
+    "Español (Nativo)",
+    "Inglés B2"
+  ],
+  "target_title_frontend": "Desarrollador Frontend",
+  "target_title_fullstack": "Desarrollador Full Stack",
+  "summary_frontend": "Desarrollador frontend con experiencia en la construcción de interfaces accesibles y responsivas con React, TypeScript y Next.js. Ha trabajado en equipos ágiles integrando APIs REST, optimizando el rendimiento web y manteniendo componentes reutilizables. Se enfoca en convertir requisitos de negocio en experiencias claras, mantenibles y medibles.",
+  "summary_fullstack": "Desarrollador full stack con experiencia en frontend moderno y APIs con Python/FastAPI y Node.js. Ha participado en el diseño de bases de datos, la integración de servicios y despliegues con Docker. Le interesa construir productos completos, con código mantenible, pruebas y foco en la experiencia del usuario.",
+  "skills_frontend": {
+    "Frontend": [
+      "React",
+      "TypeScript",
+      "JavaScript",
+      "HTML5",
+      "CSS3",
+      "Next.js"
+    ],
+    "Arquitectura Frontend": [
+      "Componentes reutilizables",
+      "Diseño responsive",
+      "Accesibilidad"
+    ],
+    "E-commerce": [
+      "Shopify",
+      "Liquid",
+      "Stripe"
+    ],
+    "APIs e integración": [
+      "REST",
+      "GraphQL"
+    ],
+    "Herramientas de desarrollo": [
+      "Git",
+      "Docker",
+      "Vite",
+      "npm"
+    ],
+    "Optimización web": [
+      "Core Web Vitals",
+      "SEO técnico",
+      "Lazy loading"
+    ],
+    "Metodologías": [
+      "Scrum",
+      "Desarrollo ágil"
+    ]
+  },
+  "skills": {
+    "Frontend": [
+      "React",
+      "TypeScript",
+      "JavaScript",
+      "HTML5",
+      "CSS3"
+    ],
+    "Backend": [
+      "Python",
+      "FastAPI",
+      "Node.js",
+      "APIs REST"
+    ],
+    "Bases de datos": [
+      "PostgreSQL",
+      "MySQL",
+      "SQL"
+    ],
+    "Arquitectura": [
+      "Clean Architecture",
+      "MVC",
+      "Diseño de APIs"
+    ],
+    "DevOps e infraestructura": [
+      "Git",
+      "Docker",
+      "Linux",
+      "CI/CD"
+    ],
+    "E-commerce": [
+      "Shopify",
+      "Liquid",
+      "Stripe"
+    ],
+    "Optimización web": [
+      "Core Web Vitals",
+      "SEO técnico"
+    ],
+    "Otros": [
+      "Scrum",
+      "Documentación técnica"
+    ]
+  },
+  "experience": [
+    {
+      "id": "empresa-ejemplo",
+      "section": "profesional",
+      "title": "Desarrollador Frontend",
+      "company": "Empresa de Ejemplo – Remoto",
+      "dates": "Ene 2023 – Actualidad",
+      "type": "Experiencia profesional",
+      "technologies": [
+        "React",
+        "TypeScript",
+        "Next.js",
+        "REST"
+      ],
+      "bullets": [
+        "Desarrollé módulos de gestión de usuarios y permisos con React y TypeScript, reutilizando componentes y reduciendo la duplicación de código.",
+        "Integré APIs REST y mantuve flujos de autenticación, manejo de estados y validación de formularios.",
+        "Colaboré con diseño y producto para implementar interfaces responsivas y accesibles, con seguimiento de métricas de rendimiento."
+      ]
+    },
+    {
+      "id": "proyecto-ejemplo",
+      "section": "proyectos",
+      "title": "Desarrollador Frontend",
+      "title_fullstack": "Desarrollador Full Stack",
+      "company": "Proyecto personal – Remoto",
+      "dates": "2024",
+      "type": "Proyecto personal",
+      "technologies": [
+        "Next.js",
+        "TypeScript",
+        "FastAPI",
+        "PostgreSQL",
+        "Docker"
+      ],
+      "bullets": [
+        "Construí una aplicación web para gestionar solicitudes y visualizar reportes, con autenticación y roles de usuario.",
+        "Implementé formularios validados, filtros y vistas responsivas con Next.js y TypeScript.",
+        "Consumí una API REST y documenté los componentes principales del frontend."
+      ],
+      "bullets_fullstack": [
+        "Diseñé la API con FastAPI y el modelo de datos en PostgreSQL para solicitudes, usuarios y estados.",
+        "Implementé autenticación, validaciones y endpoints de consulta con paginación.",
+        "Configuré la aplicación con Docker para facilitar el entorno de desarrollo y el despliegue."
+      ]
+    }
+  ]
+}

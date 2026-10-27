@@ -99,7 +99,7 @@ cv_local_ai/
 │   ├── pdf_builder.py         # Motor de dibujo de PDF con ReportLab
 │   └── main.py                # Punto de entrada de la aplicación FastAPI
 │
-├── data/                      # Perfil fuente del candidato (cv_base.json)
+├── data/                      # Perfil fuente (cv_base.json) y plantilla (cv_base.example.json)
 ├── outputs/                   # Directorio donde se guardan los PDFs generados
 ├── .env                       # Variables de entorno locales
 └── requirements.txt           # Dependencias del proyecto
@@ -162,15 +162,17 @@ Acceder a través del navegador en: **[http://127.0.0.1:8000](http://127.0.0.1:8
 
 ## Personalizar el perfil base
 
-La información del candidato reside en:
+La información del candidato reside en `data/cv_base.json`.
 
-`data/cv_base.json` *(Plantilla de referencia disponible en* `data/cv_base.example.json`*)*.
+La plantilla de referencia con datos ficticios está en `data/cv_base.example.json`. Cópiala, reemplaza los valores y guárdala como `data/cv_base.json`.
 
 ### Extracción automática a cv_base.json
 
 Para estructurar un currículum existente sin necesidad de editar el archivo JSON manualmente, se puede utilizar el siguiente prompt en ChatGPT, Claude o cualquier modelo de preferencia:
 
 **Haz clic aquí para desplegar y copiar el prompt de extracción**
+
+La estructura del prompt coincide con `data/cv_base.example.json`: mismos nombres de claves, mismos grupos de habilidades y los campos opcionales de fullstack.
 
 ```text
 Actúa como un extractor de datos profesional para perfiles tecnológicos. 
@@ -184,7 +186,7 @@ A continuación te proporciono el texto de mi currículum actual. Tu tarea es ex
   "linkedin": "https://linkedin.com/in/tu-perfil",
   "location": "Ciudad, País",
   "availability": "Remota, híbrida, presencial.",
-  "education": "Título Profesional o Técnico\\nInstitución Educativa\\nAño de finalización o estado.",
+  "education": "Título Profesional o Técnico\nInstitución Educativa\nAño de finalización o estado.",
   "languages": ["Español (Nativo)", "Inglés B2"],
   "target_title_frontend": "Tu título o cargo principal (ej: Desarrollador Frontend)",
   "target_title_fullstack": "Tu título fullstack (ej: Desarrollador Full Stack)",
@@ -192,30 +194,48 @@ A continuación te proporciono el texto de mi currículum actual. Tu tarea es ex
   "summary_fullstack": "Un resumen profesional de 3 a 5 líneas enfocado en tu capacidad general o fullstack.",
   "skills_frontend": {
     "Frontend": ["React", "TypeScript", "JavaScript", "HTML5", "CSS3"],
-    "Arquitectura & Calidad": ["Componentes reutilizables", "Responsive Design"],
-    "Optimización": ["Core Web Vitals", "SEO técnico"],
-    "Herramientas": ["Git", "Docker", "APIs REST"],
+    "Arquitectura Frontend": ["Componentes reutilizables", "Diseño responsive", "Accesibilidad"],
+    "E-commerce": ["Shopify", "Liquid", "Stripe"],
+    "APIs e integración": ["REST", "GraphQL"],
+    "Herramientas de desarrollo": ["Git", "Docker", "Vite"],
+    "Optimización web": ["Core Web Vitals", "SEO técnico"],
     "Metodologías": ["Scrum", "Desarrollo ágil"]
   },
   "skills": {
     "Frontend": ["React", "TypeScript", "JavaScript"],
-    "Backend": ["APIs REST", "Node.js o Python o C# si aplica"],
+    "Backend": ["Python", "FastAPI", "Node.js", "APIs REST"],
     "Bases de datos": ["PostgreSQL", "MySQL", "SQL"],
-    "DevOps & Herramientas": ["Git", "Docker", "Linux"],
-    "Metodologías": ["Scrum", "Desarrollo ágil"]
+    "Arquitectura": ["Clean Architecture", "MVC", "Diseño de APIs"],
+    "DevOps e infraestructura": ["Git", "Docker", "Linux", "CI/CD"],
+    "E-commerce": ["Shopify", "Liquid", "Stripe"],
+    "Optimización web": ["Core Web Vitals", "SEO técnico"],
+    "Otros": ["Scrum", "Documentación técnica"]
   },
   "experience": [
     {
       "id": "identificador_unico_en_minusculas",
       "section": "profesional | freelance | proyectos",
       "title": "Nombre del cargo",
-      "title_fullstack": "Nombre del cargo alternativo (opcional)",
-      "company": "Nombre Empresa o Proyecto – Modalidad (ej: Empresa S.A.S. o Proyecto personal)",
+      "company": "Nombre Empresa o Proyecto – Modalidad",
       "dates": "Mes Año – Mes Año",
       "type": "Experiencia profesional | Experiencia freelance | Proyecto personal",
       "technologies": ["Tecnología1", "Tecnología2", "Tecnología3"],
       "bullets": [
         "Responsabilidad o logro técnico detallado destacando tecnologías y resultados.",
+        "Otra responsabilidad o logro relevante."
+      ]
+    },
+    {
+      "id": "identificador_unico_en_minusculas_2",
+      "section": "proyectos",
+      "title": "Nombre del cargo",
+      "title_fullstack": "Nombre del cargo alternativo (opcional)",
+      "company": "Nombre del proyecto – Modalidad",
+      "dates": "Mes Año – Mes Año",
+      "type": "Proyecto personal",
+      "technologies": ["Tecnología1", "Tecnología2", "Tecnología3"],
+      "bullets": [
+        "Responsabilidad o logro técnico detallado.",
         "Otra responsabilidad o logro relevante."
       ],
       "bullets_fullstack": [
@@ -226,9 +246,12 @@ A continuación te proporciono el texto de mi currículum actual. Tu tarea es ex
 }
 
 Reglas importantes:
-1. No inventes tecnologías, fechas ni empresas que no aparezcan en mi texto.
-2. Cada viñeta ('bullets') debe ser completa y detallada, mencionando herramientas y módulos específicos.
-3. Devuelve ÚNICAMENTE el bloque JSON válido, sin introducciones ni comentarios.
+1. Respeta exactamente los nombres, la anidación y los tipos de las claves de la estructura.
+2. No agregues campos que no aparezcan en la estructura.
+3. Usa `title_fullstack` y `bullets_fullstack` solo cuando exista una versión fullstack; si no aplican, omítelos.
+4. No inventes tecnologías, fechas ni empresas que no aparezcan en mi texto.
+5. Cada viñeta ('bullets') debe ser completa y detallada, mencionando herramientas y módulos específicos.
+6. Devuelve ÚNICAMENTE el bloque JSON válido, sin introducciones ni comentarios.
 
 AQUÍ ESTÁ EL TEXTO DE MI CV:
 [Pega aquí el texto completo de tu currículum actual]
