@@ -2,11 +2,13 @@ from __future__ import annotations
 
 import os
 from pathlib import Path
+
 from dotenv import load_dotenv
 
 # Cargar variables de entorno desde .env si existe
 ROOT_DIR = Path(__file__).resolve().parent.parent.parent
 load_dotenv(ROOT_DIR / ".env")
+
 
 class Settings:
     PROJECT_NAME: str = "CV Local AI"
@@ -18,8 +20,20 @@ class Settings:
     TEMPLATES_DIR: Path = ROOT_DIR / "app" / "templates"
     STATIC_DIR: Path = ROOT_DIR / "app" / "static"
 
-    OLLAMA_BASE_URL: str = os.getenv("OLLAMA_BASE_URL", "http://localhost:11434")
-    OLLAMA_MODEL: str = os.getenv("OLLAMA_MODEL", "gemma4:31b-cloud")
+    # Ollama: local o cloud
+    OLLAMA_BASE_URL: str = os.getenv(
+        "OLLAMA_BASE_URL",
+        "http://localhost:11434",
+    ).rstrip("/")
+
+    OLLAMA_MODEL: str = os.getenv(
+        "OLLAMA_MODEL",
+        "gemma4:12b",
+    )
+
+    # Opcional: dejar vacío para Ollama local
+    OLLAMA_API_KEY: str = os.getenv("OLLAMA_API_KEY", "").strip()
+
     TEMPERATURE: float = float(os.getenv("OLLAMA_TEMPERATURE", "0.4"))
     NUM_CTX: int = int(os.getenv("OLLAMA_NUM_CTX", "12000"))
 
@@ -29,5 +43,6 @@ class Settings:
         "proyectos": 2,
     }
 
+
 settings = Settings()
-settings.OUTPUT_DIR.mkdir(exist_ok=True)
+settings.OUTPUT_DIR.mkdir(parents=True, exist_ok=True)

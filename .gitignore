@@ -2,3 +2,6 @@ __pycache__/
 .venv/
 outputs/*.pdf
 !outputs/.gitkeep
+.env
+.env.*
+!.env.example
