@@ -39,7 +39,7 @@ class CVService:
 
         # 3. Por defecto (remoto general o vacantes nacionales)
         return (
-            profile.get("location", "Bogotá, Colombia"),
+            profile.get("location", "Barranquilla, Colombia"),
             profile.get(
                 "availability",
                 "Remota, híbrida, presencial. Disponibilidad para reubicación a nivel nacional.",

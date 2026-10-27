@@ -3,50 +3,212 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light">
+  <meta name="theme-color" content="#FFFFFF">
+  <meta name="description" content="Adapta tu CV a cada oferta desde tu equipo. El modelo cruza los requisitos, prioriza lo relevante y genera un PDF limpio para personas y sistemas ATS.">
   <title>CV Local AI</title>
-  <link rel="stylesheet" href="/static/style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            paper: '#FFFFFF',
+            surface: '#FFFFFF',
+            ink: '#1A1A18',
+            muted: '#5F5F5A',
+            line: '#E4E4E0'
+          },
+          fontFamily: {
+            sans: ['"Public Sans"', 'ui-sans-serif', 'system-ui', 'sans-serif']
+          }
+        }
+      }
+    };
+  </script>
+  <style>
+    :root {
+      color-scheme: light;
+      --ink: #1A1A18;
+      --paper: #FFFFFF;
+    }
+
+    body {
+      background-color: var(--paper);
+      color: var(--ink);
+      font-family: "Public Sans", ui-sans-serif, system-ui, sans-serif;
+    }
+
+    ::selection {
+      background: #E8E8E4;
+      color: var(--ink);
+    }
+
+    a:focus-visible {
+      outline: 2px solid var(--ink);
+      outline-offset: 3px;
+      border-radius: 2px;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        transition-duration: 0.01ms !important;
+      }
+    }
+
+    @media (max-width: 349px) {
+      .github-label {
+        display: none;
+      }
+    }
+  </style>
 </head>
-<body>
-  <main class="shell">
-    <header class="header">
-      <div>
-        <p class="eyebrow">HERRAMIENTA LOCAL</p>
-        <h1>CV Local AI</h1>
-        <p class="sub">Adapta tu hoja de vida a cada oferta sin enviar tus datos a una API externa.</p>
-      </div>
+<body class="min-h-screen bg-paper font-sans text-ink antialiased">
+  <a href="#contenido" class="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-50 focus:rounded-[4px] focus:bg-ink focus:px-4 focus:py-2 focus:text-sm focus:font-semibold focus:text-paper">
+    Saltar al contenido
+  </a>
+
+  <div class="mx-auto flex min-h-screen w-full max-w-4xl flex-col px-5 sm:px-8">
+    <header class="flex items-center justify-between gap-6 border-b border-line py-5">
+      <a href="/" class="text-lg font-semibold tracking-tight" aria-label="CV Local AI, inicio">CV Local AI</a>
+
+      <nav class="flex items-center gap-4 text-sm" aria-label="Enlaces externos">
+        <a href="https://github.com/KevinJp21/cv-local-ai" target="_blank" rel="noopener noreferrer" aria-label="Repositorio de CV Local AI en GitHub" class="inline-flex items-center gap-2 text-muted transition-colors hover:text-ink">
+          <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" class="h-4 w-4">
+            <path d="M12 .5C5.73.5.5 5.73.5 12c0 5.08 3.29 9.39 7.86 10.91.58.11.79-.25.79-.56 0-.28-.01-1.02-.02-2-3.2.7-3.88-1.54-3.88-1.54-.53-1.34-1.29-1.7-1.29-1.7-1.05-.72.08-.71.08-.71 1.16.08 1.77 1.19 1.77 1.19 1.03 1.77 2.7 1.26 3.36.96.1-.75.4-1.26.73-1.55-2.55-.29-5.23-1.28-5.23-5.7 0-1.26.45-2.29 1.19-3.1-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.18 1.18a11.1 11.1 0 0 1 5.8 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.11 3.05.74.81 1.19 1.84 1.19 3.1 0 4.43-2.69 5.41-5.25 5.69.41.35.77 1.04.77 2.1 0 1.52-.01 2.74-.01 3.11 0 .31.21.67.8.56A10.52 10.52 0 0 0 23.5 12C23.5 5.73 18.27.5 12 .5z"/>
+          </svg>
+          <span class="github-label">GitHub</span>
+        </a>
+        <span class="h-4 w-px bg-line" aria-hidden="true"></span>
+        <a href="https://github.com/KevinJp21" target="_blank" rel="noopener noreferrer" aria-label="Perfil de KevinJp21 en GitHub" class="text-muted transition-colors hover:text-ink">KevinJp21</a>
+      </nav>
     </header>
 
-    <section class="status">
-      <span class="dot"></span>
-      <div><strong>Modelo configurado:</strong> {{ model }} <span class="muted">· Ollama en tu equipo</span></div>
-    </section>
-
-    <form action="/generate" method="post" id="cv-form">
-      <label for="job_offer">Descripción de la oferta laboral</label>
-      <textarea id="job_offer" name="job_offer" required minlength="80" maxlength="25000"
-        placeholder="Pega aquí la descripción completa: responsabilidades, requisitos, tecnologías y condiciones..."></textarea>
-      <div class="form-bottom">
-        <span class="hint">El modelo seleccionará las experiencias relevantes y generará un PDF.</span>
-        <button type="submit" id="submit-btn">Generar CV en PDF <span aria-hidden="true">↗</span></button>
+    <main id="contenido" class="flex-1 py-12 sm:py-16">
+      <div>
+        <h1 class="text-balance text-3xl font-semibold leading-tight tracking-tight sm:text-4xl">
+          Adapta tu CV a la oferta.
+        </h1>
+        <p class="mt-4 max-w-xl text-[15px] leading-7 text-muted sm:text-base">
+          Pega la descripción de la vacante. El modelo cruza los requisitos con tu experiencia, prioriza lo relevante y genera un PDF limpio para personas y sistemas ATS. La aplicación y el PDF se quedan en tu equipo.
+        </p>
       </div>
-    </form>
 
-    <section class="rules">
-      <h2>Antes de empezar</h2>
-      <ul>
-        <li>La información personal y la experiencia se toman de <code>data/cv_base.json</code>.</li>
-        <li>El modelo no debería inventar tecnologías, empleos ni responsabilidades.</li>
-        <li>El PDF se genera localmente. Revísalo antes de enviarlo.</li>
-      </ul>
-    </section>
-    <footer>Versión inicial · Solo accesible en tu equipo si la ejecutas en localhost.</footer>
-  </main>
+      <form action="/generate" method="post" id="cv-form" class="mt-10 overflow-hidden rounded-lg border border-line bg-surface shadow-sm">
+        <div class="flex flex-col gap-1 border-b border-line px-5 py-4 sm:flex-row sm:items-center sm:justify-between sm:px-6">
+          <label for="job_offer" class="text-sm font-semibold text-ink">Descripción de la oferta</label>
+          <div class="flex flex-wrap items-center gap-x-2 gap-y-1 text-xs text-muted">
+            <span class="h-1.5 w-1.5 rounded-full bg-ink" aria-hidden="true"></span>
+            <span>Modelo:</span>
+            <span class="font-medium text-ink">{{ model }}</span>
+            <span class="text-line" aria-hidden="true">/</span>
+            <span>Ollama local o cloud</span>
+          </div>
+        </div>
+
+        <div class="p-5 sm:p-6">
+          <textarea id="job_offer" name="job_offer" required minlength="80" maxlength="25000" rows="12"
+            aria-describedby="form-hint form-status char-count"
+            class="block min-h-[300px] w-full resize-y rounded-md border border-line bg-white px-4 py-4 text-[15px] leading-7 text-ink placeholder:text-muted focus:border-ink/40 focus:outline-none focus:ring-4 focus:ring-ink/5"
+            placeholder="Pega aquí la descripción completa: responsabilidades, requisitos, tecnologías y condiciones..."></textarea>
+
+          <div class="mt-4 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+            <div class="text-xs leading-relaxed text-muted">
+              <p id="form-hint">Mínimo 80 caracteres. El PDF se abre en esta pestaña.</p>
+              <p id="char-count" class="mt-1 tabular-nums">0 / 25.000</p>
+            </div>
+
+            <button type="submit" id="submit-btn"
+              class="inline-flex min-h-11 items-center justify-center rounded-md bg-ink px-5 text-sm font-semibold text-paper transition-colors hover:bg-[#2C2C28] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink focus-visible:ring-offset-2 focus-visible:ring-offset-surface disabled:cursor-wait disabled:opacity-60">
+              Generar CV en PDF
+            </button>
+          </div>
+
+          <p id="form-status" role="status" aria-live="polite" class="mt-3 min-h-5 text-xs leading-relaxed text-ink"></p>
+        </div>
+      </form>
+
+      <section class="mt-12 border-t border-line pt-7" aria-labelledby="antes-de-empezar">
+        <h2 id="antes-de-empezar" class="text-base font-semibold text-ink">Antes de empezar</h2>
+        <div class="mt-5 grid gap-6 sm:grid-cols-2">
+          <div>
+            <p class="text-sm font-semibold text-ink">Perfil base</p>
+            <p class="mt-1.5 text-sm leading-6 text-muted">La información personal y la experiencia se toman de <code class="font-mono text-[0.9em] text-ink">data/cv_base.json</code>.</p>
+          </div>
+          <div>
+            <p class="text-sm font-semibold text-ink">Salida</p>
+            <p class="mt-1.5 text-sm leading-6 text-muted">El PDF se genera en <code class="font-mono text-[0.9em] text-ink">outputs/</code>. Revísalo antes de enviarlo.</p>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="flex flex-col gap-3 border-t border-line py-6 text-xs text-muted sm:flex-row sm:items-center sm:justify-end">
+      <p class="flex flex-wrap items-center gap-x-2 gap-y-1">
+        <span>Hecho por</span>
+        <a href="https://github.com/KevinJp21" target="_blank" rel="noopener noreferrer" aria-label="Perfil de KevinJp21 en GitHub" class="font-medium text-ink underline decoration-line underline-offset-4 transition-colors hover:decoration-ink">KevinJp21</a>
+        <span class="text-line" aria-hidden="true">/</span>
+        <a href="https://github.com/KevinJp21/cv-local-ai" target="_blank" rel="noopener noreferrer" class="text-ink underline decoration-line underline-offset-4 transition-colors hover:decoration-ink">GitHub</a>
+      </p>
+    </footer>
+  </div>
+
   <script>
     const form = document.getElementById('cv-form');
+    const textarea = document.getElementById('job_offer');
+    const counter = document.getElementById('char-count');
+    const status = document.getElementById('form-status');
     const btn = document.getElementById('submit-btn');
-    form.addEventListener('submit', () => {
+    const minChars = 80;
+    const maxChars = 25000;
+
+    function formatNumber(value) {
+      return value.toLocaleString('es-CO');
+    }
+
+    function updateCounter() {
+      const length = textarea.value.trim().length;
+      if (length === 0) {
+        counter.textContent = `0 / ${formatNumber(maxChars)}`;
+      } else if (length < minChars) {
+        counter.textContent = `Faltan ${minChars - length} caracteres`;
+      } else {
+        counter.textContent = `${formatNumber(length)} / ${formatNumber(maxChars)}`;
+      }
+    }
+
+    function resetButton() {
+      btn.disabled = false;
+      btn.removeAttribute('aria-busy');
+      btn.textContent = 'Generar CV en PDF';
+    }
+
+    textarea.addEventListener('input', updateCounter);
+    updateCounter();
+
+    form.addEventListener('submit', (event) => {
+      const length = textarea.value.trim().length;
+      if (length < minChars) {
+        event.preventDefault();
+        status.textContent = `La oferta necesita al menos ${minChars} caracteres. Faltan ${minChars - length}.`;
+        textarea.focus();
+        return;
+      }
+
       btn.disabled = true;
-      btn.textContent = 'Generando… espera, el modelo puede tardar un poco';
+      btn.setAttribute('aria-busy', 'true');
+      btn.textContent = 'Generando CV…';
+      status.textContent = 'El modelo está leyendo la oferta. No cierres esta pestaña.';
+    });
+
+    window.addEventListener('pageshow', (event) => {
+      if (event.persisted) {
+        resetButton();
+        status.textContent = '';
+      }
     });
   </script>
 </body>
