@@ -93,19 +93,38 @@
           Adapta tu CV a la oferta.
         </h1>
         <p class="mt-4 max-w-xl text-[15px] leading-7 text-muted sm:text-base">
-          Pega la descripción de la vacante. El modelo cruza los requisitos con tu experiencia, prioriza lo relevante y genera un PDF limpio para personas y sistemas ATS. La aplicación y el PDF se quedan en tu equipo.
+          Pega la descripción de la vacante. El modelo cruza los requisitos con tu experiencia, prioriza lo relevante y genera un PDF limpio para personas y sistemas ATS. Con Ollama local, los datos no salen de tu equipo; con Gemini, se envían a Google.
         </p>
       </div>
 
+      {% if error_message %}
+      <div role="alert" class="mt-8 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm leading-6 text-red-900">
+        <p class="font-semibold">No se pudo generar el CV</p>
+        <p class="mt-1">{{ error_message }}</p>
+      </div>
+      {% endif %}
+
       <form action="/generate" method="post" id="cv-form" class="mt-10 overflow-hidden rounded-lg border border-line bg-surface shadow-sm">
-        <div class="flex flex-col gap-1 border-b border-line px-5 py-4 sm:flex-row sm:items-center sm:justify-between sm:px-6">
+        <div class="flex flex-col gap-3 border-b border-line px-5 py-4 sm:flex-row sm:items-center sm:justify-between sm:px-6">
           <label for="job_offer" class="text-sm font-semibold text-ink">Descripción de la oferta</label>
-          <div class="flex flex-wrap items-center gap-x-2 gap-y-1 text-xs text-muted">
-            <span class="h-1.5 w-1.5 rounded-full bg-ink" aria-hidden="true"></span>
-            <span>Modelo:</span>
-            <span class="font-medium text-ink">{{ model }}</span>
-            <span class="text-line" aria-hidden="true">/</span>
-            <span>Ollama local o cloud</span>
+          <div class="flex flex-wrap items-center gap-x-3 gap-y-2 text-xs text-muted">
+            {% if models %}
+            <select id="model" name="model" aria-label="Modelo"
+              class="rounded-md border border-line bg-white px-2.5 py-1.5 text-xs text-ink focus:border-ink/40 focus:outline-none focus:ring-4 focus:ring-ink/5">
+              {% for item in models %}
+              <option value="{{ item.id }}" {% if item.id == selected_model %}selected{% endif %}>
+                {{ item.name }}{% if item.recommended %} · Recomendado{% endif %}
+              </option>
+              {% endfor %}
+            </select>
+            {% else %}
+            <span class="text-xs text-muted">Sin modelos disponibles</span>
+            {% endif %}
+            <div class="flex items-center gap-x-2">
+              <span class="h-1.5 w-1.5 rounded-full bg-ink" aria-hidden="true"></span>
+              <span>Proveedor:</span>
+              <span class="font-medium text-ink">{{ provider_label }}</span>
+            </div>
           </div>
         </div>
 
@@ -113,7 +132,7 @@
           <textarea id="job_offer" name="job_offer" required minlength="80" maxlength="25000" rows="12"
             aria-describedby="form-hint form-status char-count"
             class="block min-h-[300px] w-full resize-y rounded-md border border-line bg-white px-4 py-4 text-[15px] leading-7 text-ink placeholder:text-muted focus:border-ink/40 focus:outline-none focus:ring-4 focus:ring-ink/5"
-            placeholder="Pega aquí la descripción completa: responsabilidades, requisitos, tecnologías y condiciones..."></textarea>
+            placeholder="Pega aquí la descripción completa: responsabilidades, requisitos, tecnologías y condiciones...">{{ job_offer }}</textarea>
 
           <div class="mt-4 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
             <div class="text-xs leading-relaxed text-muted">
@@ -162,6 +181,7 @@
     const counter = document.getElementById('char-count');
     const status = document.getElementById('form-status');
     const btn = document.getElementById('submit-btn');
+    const modelSelect = document.getElementById('model');
     const minChars = 80;
     const maxChars = 25000;
 
@@ -181,13 +201,18 @@
     }
 
     function resetButton() {
-      btn.disabled = false;
+      btn.disabled = !modelSelect;
       btn.removeAttribute('aria-busy');
       btn.textContent = 'Generar CV en PDF';
     }
 
     textarea.addEventListener('input', updateCounter);
     updateCounter();
+
+    if (!modelSelect) {
+      btn.disabled = true;
+      status.textContent = 'No hay modelos disponibles. Verifica la conexión con el proveedor.';
+    }
 
     form.addEventListener('submit', (event) => {
       const length = textarea.value.trim().length;

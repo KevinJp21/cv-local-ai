@@ -1,26 +1,22 @@
 # CV Local AI
 
-Plataforma local-first y privada para adaptar dinámicamente un currículum (CV) a **ofertas laborales del área de TI** y generar un PDF profesional optimizado para sistemas ATS, utilizando modelos de lenguaje mediante Ollama (local o cloud) y renderizado tipográfico con ReportLab. Actualmente está enfocada en perfiles tecnológicos; todavía no cubre ofertas de otras industrias ni un uso global.
+Plataforma local-first y privada para adaptar dinámicamente un currículum (CV) a **ofertas laborales del área de TI** y generar un PDF profesional optimizado para sistemas ATS, utilizando modelos de lenguaje mediante Ollama (local o cloud) o Google Gemini y renderizado tipográfico con ReportLab. Actualmente está enfocada en perfiles tecnológicos; todavía no cubre ofertas de otras industrias ni un uso global.
 
 ---
 
-## Modelo recomendado
+## Catálogo de modelos
 
-Para un rendimiento óptimo en velocidad y calidad de redacción, se recomienda configurar en el archivo `.env`:
+El modelo se elige desde la interfaz web, no desde `.env`. El catálogo cambia según el proveedor activo:
 
-```env
-OLLAMA_MODEL=gemma4:31b-cloud
-```
+- **Ollama:** se obtiene dinámicamente desde `/api/tags` (modelos instalados o disponibles en tu instancia).
+- **Gemini:** catálogo fijo con estas opciones:
+  - **Gemini 3.8 Flash** (`gemini-3.8-flash`) — recomendado para adaptar el CV completo.
+  - **Gemini 3.5 Flash-Lite** (`gemini-3.5-flash-lite`) — alternativa económica para tareas sencillas y de alto volumen.
+  - **Gemini 3.6 Flash** (`gemini-3.6-flash`) — opción intermedia para generación de texto.
 
-> **Nota técnica sobre este modelo:**
-> Ofrece tiempos de respuesta de entre 4 y 5 segundos por currículum, comprensión precisa de directivas de arquitectura de software y capacidad operativa continua para flujos intensivos de postulación.
->
-> El sufijo `-cloud` está pensado para ejecutarse a través de un **Ollama local**. Si vas a consumir directamente la API de Ollama Cloud, usa el nombre del modelo **sin** `-cloud` y configura `OLLAMA_BASE_URL=https://ollama.com`.
+`OLLAMA_MODEL` sigue existiendo solo como respaldo opcional si `/api/tags` no devuelve el catálogo (por ejemplo, en Ollama Cloud). Para Gemini no necesitas definir ningún modelo en `.env`.
 
-**Alternativas locales compatibles:**
-
-- `qwen2.5:14b` (Excelente seguimiento de instrucciones y redacción técnica en GPU/local)
-- `llama3.1:8b` (Ligero, adecuado para equipos con menor disponibilidad de VRAM)
+> Si prefieres usar Google Gemini, revisa la sección [Google Gemini (opcional)](#google-gemini-opcional).
 
 ---
 
@@ -28,23 +24,22 @@ OLLAMA_MODEL=gemma4:31b-cloud
 
 ## Configuración de Ollama: local o cloud
 
-El archivo `.env` controla la conexión con Ollama:
+El archivo `.env` controla el proveedor de LLM y la conexión con Ollama:
 
 ```env
+LLM_PROVIDER=ollama
 OLLAMA_BASE_URL=http://localhost:11434
-OLLAMA_MODEL=gemma4:31b-cloud
 OLLAMA_API_KEY=
 OLLAMA_TEMPERATURE=0.4
 OLLAMA_NUM_CTX=12000
 ```
 
-
+> El modelo se elige en la interfaz web. `OLLAMA_MODEL` es opcional y solo se usa como respaldo si `/api/tags` no devuelve el catálogo.
 
 ### Opción A · Ollama local (por defecto)
 
 ```env
 OLLAMA_BASE_URL=http://localhost:11434
-OLLAMA_MODEL=gemma4:31b-cloud
 OLLAMA_API_KEY=
 OLLAMA_TEMPERATURE=0.4
 OLLAMA_NUM_CTX=12000
@@ -52,22 +47,19 @@ OLLAMA_NUM_CTX=12000
 
 - Requiere tener Ollama instalado y ejecutándose en tu equipo.
 - `OLLAMA_API_KEY` se deja vacío.
-- El sufijo `-cloud` **solo funciona en local**: le indica al servidor local de Ollama que ejecute el modelo en la nube utilizando la sesión de Ollama.
-
-
+- El sufijo `-cloud` **solo funciona en local**: le indica al servidor local de Ollama que ejecute el modelo en la nube utilizando la sesión de Ollama. Puedes elegir ese modelo desde el catálogo si aparece en `/api/tags`.
 
 ### Opción B · Ollama Cloud / API directa
 
 ```env
 OLLAMA_BASE_URL=https://ollama.com
-OLLAMA_MODEL=gemma4:31b
 OLLAMA_API_KEY=tu_api_key_de_ollama
 OLLAMA_TEMPERATURE=0.4
 OLLAMA_NUM_CTX=12000
 ```
 
 - Solo debes agregar tu API key en `OLLAMA_API_KEY` dentro de `.env`.
-- Configura el modelo **sin** el sufijo `-cloud` (`gemma4:31b`, no `gemma4:31b-cloud`).
+- Si `/api/tags` no devuelve los modelos de Ollama Cloud, define `OLLAMA_MODEL` como respaldo opcional. En ese caso usa el modelo **sin** el sufijo `-cloud` (`gemma4:31b`, no `gemma4:31b-cloud`).
 - Apunta `OLLAMA_BASE_URL` a `https://ollama.com`.
 - El endpoint directo de Ollama Cloud **no reconoce** el sufijo `-cloud`; ese sufijo únicamente es válido cuando se usa el Ollama local.
 - `OLLAMA_API_KEY` es opcional: si está vacío, la aplicación funciona en modo local sin autenticación.
@@ -77,6 +69,117 @@ OLLAMA_NUM_CTX=12000
 ---
 
 
+
+## Google Gemini (opcional)
+
+También puedes usar modelos Gemini con una API key de Google AI Studio.
+
+1. Crea una API key en [Google AI Studio](https://aistudio.google.com/apikey).
+2. Agrégala en `.env`:
+
+```env
+LLM_PROVIDER=gemini
+GEMINI_API_KEY=tu_api_key_de_google
+```
+
+3. Reinicia el servidor de uvicorn.
+
+El modelo se elige desde el catálogo de la interfaz web; no necesitas definirlo en `.env`.
+
+Variables opcionales:
+
+```env
+# Temperatura de generación (0.0 - 2.0). Por defecto 1.0.
+GEMINI_TEMPERATURE=1.0
+
+# Mostrar el razonamiento y el JSON generado en la consola del servidor.
+# Por defecto true. Ponlo en false si tu modelo no admite thinkingConfig.
+GEMINI_INCLUDE_THOUGHTS=true
+
+# Endpoint base (normalmente no necesitas cambiarlo)
+GEMINI_BASE_URL=https://generativelanguage.googleapis.com/v1beta
+
+# Límite de tokens de salida
+GEMINI_MAX_OUTPUT_TOKENS=8192
+```
+
+- Para volver a Ollama: `LLM_PROVIDER=ollama`.
+- La aplicación llama a `https://generativelanguage.googleapis.com/v1beta/models/<modelo>:streamGenerateContent?alt=sse` con el header `X-goog-api-key`.
+- La respuesta se muestra en streaming en la consola: primero el razonamiento (`[RAZONAMIENTO]`) y después el JSON generado (`[JSON GENERADO]`). El razonamiento no se muestra en la interfaz web.
+- Gemini recibe la oferta y el perfil del candidato. Revisa la política de privacidad de Google antes de usarlo con datos personales.
+- No subas tu API key al repositorio; `.env` ya está en `.gitignore`.
+
+> Si la API key se compartió en un chat o en un issue, rótala desde Google AI Studio.
+
+---
+
+## Agregar un nuevo proveedor de LLM
+
+La selección del proveedor ya no usa una cadena de `if/elif`. Cada proveedor implementa el mismo contrato (`model`, `label` y `generate_tailored_cv`) y se registra en un diccionario central.
+
+Para agregar, por ejemplo, Claude:
+
+1. Crea `app/services/claude_service.py` con una clase que cumpla el contrato y reutilice el parser compartido:
+
+```python
+from typing import Any
+
+from app.schemas.cv import TailoredCV
+from app.services.llm_base import LLMModel
+from app.services.llm_response import parse_and_validate_cv
+
+
+class ClaudeService:
+    label = "Anthropic Claude"
+
+    def __init__(self) -> None:
+        self.model = "claude-..."
+
+    @property
+    def default_model(self) -> str:
+        return self.model
+
+    def list_models(self) -> list[LLMModel]:
+        return [
+            LLMModel(
+                id=self.model,
+                name="Claude ...",
+                recommended=True,
+            )
+        ]
+
+    def generate_tailored_cv(
+        self,
+        prompt: str,
+        profile: dict[str, Any],
+        model: str | None = None,
+    ) -> TailoredCV:
+        selected_model = model or self.model
+        raw_content = "..."  # Llamada a la API de Claude.
+        return parse_and_validate_cv(raw_content, profile)
+
+
+claude_service = ClaudeService()
+```
+
+2. Regístralo en `app/services/llm_registry.py`:
+
+```python
+from app.services.claude_service import claude_service
+
+_PROVIDERS = {
+    "ollama": ollama_service,
+    "gemini": gemini_service,
+    "claude": claude_service,
+}
+```
+
+3. Agrega sus variables en `app/core/config.py`, `.env.example` y este README.
+4. Configura `LLM_PROVIDER=claude` y reinicia el servidor.
+
+No necesitas modificar `cv_service.py` ni `routes.py`: ambos obtienen el proveedor activo desde el registro. El parser y la validación de IDs también son compartidos por todos los proveedores.
+
+---
 
 ## Arquitectura del proyecto
 
@@ -91,7 +194,11 @@ cv_local_ai/
 │   ├── repositories/          # Acceso y lectura de datos fuente (profile_repository.py)
 │   ├── services/              # Casos de uso y lógica de negocio
 │   │   ├── prompt_service.py   # Reglas dinámicas y construcción de prompts ATS
-│   │   ├── ollama_service.py   # Cliente Ollama, streaming y extractor JSON resiliente
+│   │   ├── llm_base.py         # Contrato común de proveedores de LLM
+│   │   ├── llm_registry.py     # Registro y selección del proveedor activo
+│   │   ├── llm_response.py     # Parser, normalizador y validación compartidos
+│   │   ├── ollama_service.py   # Cliente Ollama, streaming y respuesta JSON
+│   │   ├── gemini_service.py   # Cliente Google Gemini (API key)
 │   │   └── cv_service.py       # Orquestador del flujo y generación de PDF
 │   ├── api/                   # Capa de presentación / Endpoints FastAPI (routes.py)
 │   ├── templates/             # Interfaz web con Jinja2 (index.html)
@@ -116,7 +223,8 @@ cv_local_ai/
 ### 1. Requisitos
 
 - **Python 3.11+**
-- **Ollama** instalado y en ejecución en el entorno local (`http://localhost:11434`).
+- **Ollama** instalado y en ejecución en el entorno local (`http://localhost:11434`), para el modo Ollama.
+- **API key de Google AI Studio** (opcional, solo para el modo Gemini).
 
 
 
@@ -140,13 +248,13 @@ pip install -r requirements.txt
 
 ### 3. Configuración y ejecución
 
-El repositorio incluye el archivo `.env` configurado por defecto para trabajar en entorno local. Si se requiere modificar el modelo, basta con actualizar el valor de `OLLAMA_MODEL` en `.env`:
+El repositorio incluye `.env.example` con Ollama configurado por defecto. Para cambiar de proveedor, edita `LLM_PROVIDER` y las variables correspondientes en `.env`. El modelo se elige después desde la interfaz web:
 
 ```env
-OLLAMA_MODEL=gemma4:31b-cloud
+LLM_PROVIDER=ollama
 ```
 
-> Para usar Ollama Cloud o la API directa, revisa la sección [Configuración de Ollama: local o cloud](#configuración-de-ollama-local-o-cloud).
+> Para usar Ollama Cloud o la API directa, revisa la sección [Configuración de Ollama: local o cloud](#configuración-de-ollama-local-o-cloud). Para usar Gemini, revisa [Google Gemini (opcional)](#google-gemini-opcional).
 
 Iniciar el servidor de desarrollo:
 
@@ -305,9 +413,11 @@ def resolve_location(job_offer: str, profile: dict[str, Any]) -> tuple[str, str]
 ## Características principales
 
 - **Alineación dinámica con ATS:** Identifica los requisitos principales de la vacante (frontend, backend, fullstack, e-commerce, APIs, bases de datos) y prioriza las tecnologías y logros con mayor afinidad.
+- **Catálogo de modelos por proveedor:** el modelo se elige desde la interfaz web; Ollama expone sus modelos disponibles y Gemini muestra su catálogo integrado.
+- **Errores controlados:** los límites de uso, la alta demanda o las caídas temporales del proveedor se muestran como una alerta en la interfaz, conservando la oferta y el modelo seleccionado.
 - **Sincronización de título y archivo:** El encabezado del currículum y el nombre del archivo PDF generado adoptan automáticamente la denominación del puesto objetivo (ejemplo: `CV_TuNombre_ShopifyDeveloper.pdf` o `CV_TuNombre_AnalistaDeDesarrollo.pdf`).
 - **Resiliencia de formato:** Parser capaz de sanear bloques markdown y normalizar esquemas para garantizar compatibilidad entre diversos modelos LLM.
-- **Privacidad por defecto:** en modo Ollama local, la información profesional y las descripciones de las vacantes se procesan en tu equipo sin transmitirse a servicios externos. Si habilitas Ollama Cloud/API directa, los datos se envían al proveedor del modelo según sus políticas.
+- **Privacidad por defecto:** en modo Ollama local, la información profesional y las descripciones de las vacantes se procesan en tu equipo sin transmitirse a servicios externos. Si usas Ollama Cloud/API directa o Google Gemini, los datos se envían al proveedor correspondiente según sus políticas.
 
 ---
 
@@ -333,7 +443,7 @@ Las contribuciones son bienvenidas: mejoras al prompt, nuevos modelos compatible
    # source .venv/bin/activate    # Linux/macOS
    pip install -r requirements.txt
   ```
-4. Copia `.env.example` a `.env` y configura Ollama local o cloud.
+4. Copia `.env.example` a `.env` y configura Ollama (local o cloud) o Gemini.
 5. Realiza el cambio y prueba el flujo completo generando al menos un CV.
 6. Haz commit con un mensaje claro:
   ```bash
@@ -343,7 +453,7 @@ Las contribuciones son bienvenidas: mejoras al prompt, nuevos modelos compatible
 7. Sube la rama y abre un Pull Request explicando:
   - Qué problema resuelve.
   - Cómo lo probaste.
-  - Modelo de Ollama utilizado (local o cloud).
+  - Proveedor y modelo utilizados (Ollama o Gemini).
   - Capturas o logs si aplica.
 
 
@@ -364,7 +474,7 @@ Las contribuciones son bienvenidas: mejoras al prompt, nuevos modelos compatible
 Incluye:
 
 - Pasos para reproducirlo.
-- Modelo y configuración usada (`OLLAMA_MODEL`, local o cloud; **nunca** compartas tu API key).
+- Proveedor y configuración usada (`LLM_PROVIDER`, modelo, local/cloud; **nunca** compartas tu API key).
 - Mensaje de error o fragmento relevante de la consola.
 - Versión de Python y sistema operativo.
 

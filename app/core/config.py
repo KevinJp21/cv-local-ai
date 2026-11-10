@@ -28,14 +28,36 @@ class Settings:
 
     OLLAMA_MODEL: str = os.getenv(
         "OLLAMA_MODEL",
-        "gemma4:12b",
-    )
+        "",
+    ).strip()
 
     # Opcional: dejar vacío para Ollama local
     OLLAMA_API_KEY: str = os.getenv("OLLAMA_API_KEY", "").strip()
 
-    TEMPERATURE: float = float(os.getenv("OLLAMA_TEMPERATURE", "0.4"))
+    OLLAMA_TEMPERATURE: float = float(
+        os.getenv("OLLAMA_TEMPERATURE", "0.4")
+    )
     NUM_CTX: int = int(os.getenv("OLLAMA_NUM_CTX", "12000"))
+
+    # Proveedor de LLM: "ollama" o "gemini".
+    LLM_PROVIDER: str = os.getenv("LLM_PROVIDER", "ollama").strip().lower()
+
+    # Google Gemini (Google AI Studio)
+    GEMINI_API_KEY: str = os.getenv("GEMINI_API_KEY", "").strip()
+    GEMINI_TEMPERATURE: float = float(
+        os.getenv("GEMINI_TEMPERATURE", "1.0")
+    )
+    GEMINI_INCLUDE_THOUGHTS: bool = os.getenv(
+        "GEMINI_INCLUDE_THOUGHTS",
+        "true",
+    ).strip().lower() in {"1", "true", "yes", "on"}
+    GEMINI_BASE_URL: str = os.getenv(
+        "GEMINI_BASE_URL",
+        "https://generativelanguage.googleapis.com/v1beta",
+    ).rstrip("/")
+    GEMINI_MAX_OUTPUT_TOKENS: int = int(
+        os.getenv("GEMINI_MAX_OUTPUT_TOKENS", "8192")
+    )
 
     SECTION_ORDER: dict[str, int] = {
         "profesional": 0,

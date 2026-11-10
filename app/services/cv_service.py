@@ -9,7 +9,7 @@ from app.core.config import settings
 from app.pdf_builder import build_cv_pdf
 from app.repositories.profile_repository import profile_repository
 from app.schemas.cv import TailoredCV
-from app.services.ollama_service import ollama_service
+from app.services.llm_registry import get_llm_service
 from app.services.prompt_service import prompt_service
 
 
@@ -79,12 +79,23 @@ class CVService:
         )
         return f"CV_{candidate}_{position}.pdf"
 
-    def generate_cv_for_offer(self, job_offer: str) -> tuple[Path, str]:
+    def generate_cv_for_offer(
+        self,
+        job_offer: str,
+        model: str | None = None,
+    ) -> tuple[Path, str]:
         profile = profile_repository.load_profile()
         profile_facts = profile_repository.get_profile_for_prompt(profile)
 
         prompt = prompt_service.build_tailoring_prompt(job_offer, profile_facts)
-        tailored_cv: TailoredCV = ollama_service.generate_tailored_cv(prompt, profile)
+
+        llm = get_llm_service()
+        tailored_cv: TailoredCV = llm.generate_tailored_cv(
+            prompt,
+            profile,
+            model=model,
+        )
+
         tailored = tailored_cv.model_dump()
 
         # Sincronizar el título visible en el CV con el nombre del puesto de la vacante.

@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 import json
-import re
 from typing import Any
 
 import requests
@@ -10,9 +9,13 @@ from pydantic import ValidationError
 
 from app.core.config import settings
 from app.schemas.cv import TailoredCV
+from app.services.llm_base import LLMModel
+from app.services.llm_response import parse_and_validate_cv
 
 
 class OllamaService:
+    label: str = "Ollama local o cloud"
+
     def __init__(
         self,
         base_url: str | None = None,
@@ -23,7 +26,7 @@ class OllamaService:
             base_url or settings.OLLAMA_BASE_URL
         ).rstrip("/")
 
-        self.model = model or settings.OLLAMA_MODEL
+        self.model = (model or settings.OLLAMA_MODEL).strip()
 
         # La API key es opcional.
         # Si no se proporciona, utiliza la configurada en settings.
@@ -31,161 +34,123 @@ class OllamaService:
             api_key if api_key is not None else settings.OLLAMA_API_KEY
         ).strip()
 
-    @staticmethod
-    def extract_and_parse_json(
-        raw_text: str,
-        profile: dict[str, Any],
-    ) -> dict[str, Any]:
-        text = raw_text.strip()
+    @property
+    def default_model(self) -> str:
+        return self.model
 
-        # Quitar delimitadores de Markdown si existen.
-        if "```" in text:
-            match = re.search(
-                r"```(?:json)?\s*([\s\S]*?)\s*```",
-                text,
-                re.IGNORECASE,
+    def _fallback_models(self) -> list[LLMModel]:
+        if not self.model:
+            return []
+
+        return [
+            LLMModel(
+                id=self.model,
+                name=self.model,
+                recommended=True,
             )
-            if match:
-                text = match.group(1).strip()
-
-        # Si no empieza con {, buscar el primer { y el último }.
-        if not text.startswith("{"):
-            start = text.find("{")
-            end = text.rfind("}")
-
-            if start != -1 and end != -1:
-                text = text[start : end + 1]
-
-        data = json.loads(text)
-
-        if not isinstance(data, dict):
-            raise ValueError("El resultado no es un objeto JSON.")
-
-        # --- NORMALIZADOR DE COMPATIBILIDAD (Gemma / Qwen / otros) ---
-
-        # 1. Normalizar habilidades / skill_groups.
-        if (
-            "skill_groups" not in data
-            and "habilidades" in data
-            and isinstance(data["habilidades"], dict)
-        ):
-            data["skill_groups"] = data["habilidades"]
-
-        elif (
-            "skill_groups" not in data
-            and "skills" in data
-            and isinstance(data["skills"], dict)
-        ):
-            data["skill_groups"] = data["skills"]
-
-        # 2. Normalizar focus.
-        if "focus" not in data:
-            title_lower = (
-                data.get("target_title", "")
-                + " "
-                + data.get("offer_position", "")
-            ).lower()
-
-            if (
-                "full" in title_lower
-                or "fullstack" in title_lower
-                or "full stack" in title_lower
-            ):
-                data["focus"] = "fullstack"
-
-            elif "back" in title_lower:
-                data["focus"] = "backend"
-
-            else:
-                data["focus"] = "frontend"
-
-        # 3. Normalizar experiencias si vienen como lista.
-        valid_ids = [
-            item["id"]
-            for item in profile.get("experience", [])
         ]
 
-        if (
-            "selected_experience_ids" not in data
-            or not data["selected_experience_ids"]
+    def list_models(self) -> list[LLMModel]:
+        """Obtiene el catálogo de modelos instalados o disponibles."""
+
+        url = f"{self.base_url}/api/tags"
+        headers: dict[str, str] = {}
+
+        if self.api_key:
+            headers["Authorization"] = f"Bearer {self.api_key}"
+
+        try:
+            response = requests.get(
+                url,
+                headers=headers,
+                timeout=(3, 10),
+            )
+            response.raise_for_status()
+            data = response.json()
+
+        except (requests.RequestException, ValueError):
+            return self._fallback_models()
+
+        if not isinstance(data, dict):
+            return self._fallback_models()
+
+        raw_models = data.get("models") or []
+
+        if not isinstance(raw_models, list):
+            return self._fallback_models()
+
+        models: list[LLMModel] = []
+
+        for item in raw_models:
+            if not isinstance(item, dict):
+                continue
+
+            model_id = item.get("name") or item.get("model")
+
+            if not model_id:
+                continue
+
+            models.append(
+                LLMModel(
+                    id=model_id,
+                    name=model_id,
+                    recommended=model_id == self.model,
+                )
+            )
+
+        # Si OLLAMA_MODEL apunta a un modelo que no aparece en /api/tags
+        # (por ejemplo, un modelo cloud), lo agregamos al catálogo.
+        if self.model and all(
+            item.id != self.model for item in models
         ):
-            selected_ids = []
-            bullets_dict = {}
-
-            raw_exps = (
-                data.get("experiences")
-                or data.get("experiencias")
-                or []
+            models.insert(
+                0,
+                LLMModel(
+                    id=self.model,
+                    name=self.model,
+                    recommended=True,
+                ),
             )
 
-            for exp in raw_exps:
-                if not isinstance(exp, dict):
-                    continue
+        if not models:
+            return self._fallback_models()
 
-                exp_id = exp.get("id")
-
-                if not exp_id:
-                    exp_text = (
-                        str(exp.get("empresa_o_proyecto", ""))
-                        + " "
-                        + str(exp.get("company", ""))
-                        + " "
-                        + str(exp.get("cargo", ""))
-                        + " "
-                        + str(exp.get("title", ""))
-                    ).lower()
-
-                    for valid_id in valid_ids:
-                        if valid_id.lower() in exp_text:
-                            exp_id = valid_id
-                            break
-
-                if exp_id and exp_id in valid_ids:
-                    if exp_id not in selected_ids:
-                        selected_ids.append(exp_id)
-
-                    bullets = (
-                        exp.get("viñetas")
-                        or exp.get("bullets")
-                        or []
-                    )
-
-                    if isinstance(bullets, list) and bullets:
-                        bullets_dict[exp_id] = [
-                            str(bullet) for bullet in bullets
-                        ]
-
-            if selected_ids:
-                data["selected_experience_ids"] = selected_ids
-
-                if "experience_bullets" not in data:
-                    data["experience_bullets"] = bullets_dict
-
-        # 4. Normalizar educación e idiomas.
-        if "education_text" not in data:
-            data["education_text"] = (
-                data.get("educacion")
-                or profile.get("education", "")
+        models.sort(
+            key=lambda item: (
+                not item.recommended,
+                item.name.lower(),
             )
-
-        if "languages" not in data:
-            data["languages"] = (
-                data.get("idiomas")
-                or profile.get("languages", [])
-            )
-
-        return data
+        )
+        return models
 
     def generate_tailored_cv(
         self,
         prompt: str,
         profile: dict[str, Any],
+        model: str | None = None,
     ) -> TailoredCV:
+        selected_model = (model or self.model).strip()
+
+        if not selected_model:
+            available_models = self.list_models()
+
+            if not available_models:
+                raise HTTPException(
+                    status_code=500,
+                    detail=(
+                        "No hay modelos disponibles en Ollama. "
+                        "Verifica que Ollama esté en ejecución o "
+                        "define OLLAMA_MODEL en .env."
+                    ),
+                )
+
+            selected_model = available_models[0].id
+
         schema = TailoredCV.model_json_schema()
         url = f"{self.base_url}/api/chat"
 
         payload = {
-            "model": self.model,
+            "model": selected_model,
             "stream": True,
             "format": schema,
             "messages": [
@@ -206,7 +171,7 @@ class OllamaService:
                 },
             ],
             "options": {
-                "temperature": settings.TEMPERATURE,
+                "temperature": settings.OLLAMA_TEMPERATURE,
                 "num_ctx": settings.NUM_CTX,
             },
         }
@@ -224,7 +189,7 @@ class OllamaService:
 
         print("\n" + "=" * 70, flush=True)
         print(f"OLLAMA | URL: {self.base_url}", flush=True)
-        print(f"OLLAMA | Modelo: {self.model}", flush=True)
+        print(f"OLLAMA | Modelo: {selected_model}", flush=True)
         print(
             "OLLAMA | Modo: "
             + ("Cloud con API key" if self.api_key else "Sin API key"),
@@ -243,9 +208,22 @@ class OllamaService:
             ) as response:
                 response.raise_for_status()
 
-                for line in response.iter_lines(
-                    decode_unicode=True
+                for raw_line in response.iter_lines(
+                    decode_unicode=False
                 ):
+                    if not raw_line:
+                        continue
+
+                    if isinstance(raw_line, bytes):
+                        line = raw_line.decode(
+                            "utf-8",
+                            errors="replace",
+                        )
+                    else:
+                        line = raw_line
+
+                    line = line.strip()
+
                     if not line:
                         continue
 
@@ -255,12 +233,45 @@ class OllamaService:
                         continue
 
                     if "error" in chunk:
+                        error_text = str(chunk["error"])
+                        print(
+                            f"\n[OLLAMA] Error en stream: {error_text}",
+                            flush=True,
+                        )
+
+                        error_status = 502
+                        lowered = error_text.lower()
+                        detail = (
+                            "Ollama reportó un error durante la generación. "
+                            "Revisa la terminal para más detalles."
+                        )
+
+                        if any(
+                            word in lowered
+                            for word in (
+                                "credit",
+                                "subscription",
+                                "usage",
+                                "billing",
+                            )
+                        ):
+                            error_status = 402
+                            detail = (
+                                "Ollama Cloud no tiene créditos o una "
+                                "suscripción activa. Revisa tu plan en "
+                                "ollama.com."
+                            )
+
+                        elif "not found" in lowered:
+                            error_status = 404
+                            detail = (
+                                "No se encontró el modelo seleccionado en "
+                                "Ollama. Elige otro modelo del catálogo."
+                            )
+
                         raise HTTPException(
-                            status_code=502,
-                            detail=(
-                                "Ollama reportó un error: "
-                                f"{chunk['error']}"
-                            ),
+                            status_code=error_status,
+                            detail=detail,
                         )
 
                     message = chunk.get("message", {})
@@ -346,14 +357,29 @@ class OllamaService:
 
         except requests.HTTPError as exc:
             detail = "Ollama devolvió un error HTTP."
+            app_status = 502
 
             if exc.response is not None:
                 status_code = exc.response.status_code
+                upstream = exc.response.text.strip()[:1000]
+
+                print(
+                    f"\n[OLLAMA] HTTP {status_code}: {upstream}",
+                    flush=True,
+                )
+
+                app_status = status_code
 
                 if status_code == 401:
                     detail = (
                         "Ollama rechazó la autenticación. "
                         "Verifica OLLAMA_API_KEY."
+                    )
+
+                elif status_code == 402:
+                    detail = (
+                        "Ollama Cloud no tiene créditos o una suscripción "
+                        "activa. Revisa tu plan en ollama.com."
                     )
 
                 elif status_code == 403:
@@ -365,17 +391,35 @@ class OllamaService:
                 elif status_code == 404:
                     detail = (
                         "No se encontró el endpoint o modelo solicitado. "
-                        "Verifica OLLAMA_BASE_URL y OLLAMA_MODEL."
+                        "Verifica OLLAMA_BASE_URL y el modelo seleccionado."
+                    )
+
+                elif status_code == 429:
+                    detail = (
+                        "Ollama alcanzó el límite de uso. "
+                        "Espera un momento o revisa tu plan."
+                    )
+
+                elif status_code == 503:
+                    detail = (
+                        "Ollama está experimentando alta demanda. "
+                        "Espera unos minutos y vuelve a intentarlo."
+                    )
+
+                elif status_code >= 500:
+                    detail = (
+                        "Ollama no pudo completar la solicitud por un "
+                        "problema temporal. Intenta de nuevo en unos minutos."
                     )
 
                 else:
                     detail = (
-                        f"Ollama HTTP {status_code}: "
-                        f"{exc.response.text[:300]}"
+                        f"Ollama devolvió un error HTTP {status_code}. "
+                        "Revisa la terminal para más detalles."
                     )
 
             raise HTTPException(
-                status_code=502,
+                status_code=app_status,
                 detail=detail,
             ) from exc
 
@@ -393,14 +437,9 @@ class OllamaService:
                 detail="Ollama no devolvió contenido.",
             )
 
-        # --- PARSEAR Y VALIDAR RESPUESTA ---
+        # --- PARSEAR, VALIDAR Y SANEAR RESPUESTA ---
         try:
-            data = self.extract_and_parse_json(
-                raw_content,
-                profile,
-            )
-
-            cv = TailoredCV.model_validate(data)
+            cv = parse_and_validate_cv(raw_content, profile)
 
         except (
             json.JSONDecodeError,
@@ -419,24 +458,6 @@ class OllamaService:
                     "Revisa la terminal."
                 ),
             ) from exc
-
-        # --- SANEAR IDs ---
-        valid_ids = {
-            item["id"]
-            for item in profile.get("experience", [])
-        }
-
-        cv.selected_experience_ids = [
-            experience_id
-            for experience_id in cv.selected_experience_ids
-            if experience_id in valid_ids
-        ]
-
-        cv.experience_bullets = {
-            experience_id: bullets
-            for experience_id, bullets in cv.experience_bullets.items()
-            if experience_id in valid_ids
-        }
 
         if not cv.selected_experience_ids:
             raise HTTPException(
